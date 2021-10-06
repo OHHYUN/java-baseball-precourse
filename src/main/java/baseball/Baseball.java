@@ -75,14 +75,14 @@ public class Baseball {
 		} while (condition.equals(RESTART_GAME));
 	}
 
-	public JudgeResult judgeBall(String computer, JudgeResult judgeResult) {
+	public JudgeResult judgeBall(String comNums, JudgeResult judgeResult) {
 		// 사용자가 입력값을 입력한다.
-		String player = inputMessage();
-		char[] cChar = computer.toCharArray();
-		char[] pChar = player.toCharArray();
+		String playerNums = inputMessage();
+		char[] comNum = comNums.toCharArray();
+		char[] playerNum = playerNums.toCharArray();
 		for (int i = 0; i < 3; i++) {
-			Ball ball = new Ball(cChar[i], isEqualNum(cChar[i], pChar[i])); //스트라이크 검증
-			ball.setBall(isBall(ball, pChar)); //볼 검증
+			Ball ball = new Ball(comNum[i], isEqualNum(comNum[i], playerNum[i])); //스트라이크 검증
+			ball.setBall(isBall(ball, playerNum)); //볼 검증
 			judgeResult.addStrike(ball.getStrike());
 			judgeResult.addBall(ball.getBall());
 		}
