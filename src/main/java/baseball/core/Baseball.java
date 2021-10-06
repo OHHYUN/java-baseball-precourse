@@ -1,4 +1,4 @@
-package baseball;
+package baseball.core;
 
 import baseball.message.Message;
 import baseball.model.Ball;
