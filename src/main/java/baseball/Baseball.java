@@ -1,20 +1,27 @@
 package baseball;
 
+import baseball.message.Message;
+import baseball.model.Ball;
+import baseball.model.JudgeResult;
 import nextstep.utils.Console;
 import nextstep.utils.Randoms;
 
 public class Baseball {
-	static String computer;
+
+	private static final int GAME_END_CONDITION = 3;
+	private static final String RESTART_GAME = "1";
+	private static final String END_GAME = "2";
 
 	// 문자열 입력 및 검증
 	public String inputMessage() {
-		String s = Console.readLine();
+		String inputVal = Console.readLine();
 		// 숫자이고 3글자 검증
-		if (!s.matches("^[0-9]{3}$")) {
-			System.out.println("[ERROR] : 3자리 숫자를 입력해주세요"); // 텍스트 상수 처리를 하면 좋을까요?
-			s = inputMessage();
+		if (!inputVal.matches("^[0-9]{3}$")) {
+			printMsg(Message.ERROR_THREE_DIGIT);
+			// System.out.println("[ERROR] : 3자리 숫자를 입력해주세요"); // 텍스트 상수 처리를 하면 좋을까요?
+			inputVal = inputMessage();
 		}
-		return s;
+		return inputVal;
 	}
 
 	// 고유한 숫자를 param 의 갯수만큼 뽑는다.
@@ -40,37 +47,32 @@ public class Baseball {
 	public String startGame() {
 		// 숫자를 고른다.
 		String computer = Integer.toString(pickUniqueNumber());
-		System.out.println("computer = " + computer);
-		JudgeResult judgeResult = new JudgeResult();
+		int strikeCnt = 0;
 		// 스트라이크가 3이라면 경기를 종료합니다.
-		while (judgeResult.getStrike() < 3) {
-			judgeResult = new JudgeResult();
+		while (strikeCnt < GAME_END_CONDITION) {
+			JudgeResult judgeResult = new JudgeResult();
 			judgeResult = judgeBall(computer, judgeResult);
+			strikeCnt = judgeResult.getStrike();
 			System.out.println(judgeResult.toString());
 		}
-		System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 끝");
-		System.out.println("게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.");
-		String s = whetherRestart();
-		return s;
+		printMsg(Message.END_GAME, Message.WHEATHER_RESTART);
+		return whetherRestart();
 	}
 
 	//재시작 할지 말지 정하는 메소드
 	public String whetherRestart(){
 		String result = Console.readLine();
-		boolean restart = result.matches("^[1]$");
-		boolean exit = result.matches("^[2]$");
-
-		if(!restart && !exit){
-			System.out.println("[ERROR] : 1이나 2를 입력해주세요");
+		if(!result.equals(RESTART_GAME) && !result.equals(END_GAME)){
+			printMsg(Message.ERROR_RESTART);
 			result = whetherRestart();
 		}
 		return result;
 	}
 	public void playGame() {
-		String s;
+		String condition;
 		do {
-			s = startGame();
-		} while (s.equals("1"));
+			condition = startGame();
+		} while (condition.equals(RESTART_GAME));
 	}
 
 	public JudgeResult judgeBall(String computer, JudgeResult judgeResult) {
@@ -108,4 +110,10 @@ public class Baseball {
 		return result;
 	}
 
+	//메세지를 출력하기 위한 메소드
+	public void printMsg(Message... args){
+		for(Message msg : args){
+			System.out.println(msg.getMsg());
+		}
+	}
 }
